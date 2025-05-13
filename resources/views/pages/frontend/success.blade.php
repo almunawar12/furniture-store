@@ -32,7 +32,7 @@
               please sit tight and be ready for it
             </p>
             <a
-              href="details.html"
+              href="{{ route('index') }}"
               class="text-gray-900 bg-red-200 focus:outline-none w-full py-3 rounded-full text-lg focus:text-black transition-all duration-200 px-8 cursor-pointer"
             >
               Back to Shop

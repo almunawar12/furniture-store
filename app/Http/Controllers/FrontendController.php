@@ -15,13 +15,13 @@ use App\Models\TransactionItem;
 
 class FrontendController extends Controller
 {
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         $products = Product::with(['galleries'])->latest()->get();
 
         return view('pages.frontend.index', compact('products'));
     }
-    public function details(Request $request, $slug) 
+    public function details(Request $request, $slug)
     {
         $product = Product::with(['galleries'])->where('slug', $slug)->firstOrFail();
         $recommendations = Product::with(['galleries'])->inRandomOrder()->limit(4)->get();
@@ -46,8 +46,8 @@ class FrontendController extends Controller
 
         return redirect('cart');
     }
-    
-    public function cart(Request $request) 
+
+    public function cart(Request $request)
     {
         $carts = Cart::with(['product.galleries'])->where('users_id', Auth::user()->id)->get();
 
@@ -64,19 +64,19 @@ class FrontendController extends Controller
         // Add to Transaction data
         $data['users_id'] = Auth::user()->id;
         $data['total_price'] = $carts->sum('product.price');
-    
+
         // Create Transaction
         $transaction = Transaction::create($data);
 
         // Create Transaction item
-        foreach($carts as $cart) {
+        foreach ($carts as $cart) {
             $items[] = TransactionItem::create([
                 'transactions_id' => $transaction->id,
                 'users_id' => $cart->users_id,
                 'products_id' => $cart->products_id,
             ]);
         }
-        
+
         // Delete cart after transaction
         Cart::where('users_id', Auth::user()->id)->delete();
 
@@ -96,8 +96,11 @@ class FrontendController extends Controller
                 'first_name'    => $transaction->name,
                 'email'         => $transaction->email
             ),
-            'enabled_payments' => array('gopay','bank_transfer'),
-            'vtweb' => array()
+            'enabled_payments' => array('gopay', 'bank_transfer'),
+            'vtweb' => [],
+            'callbacks' => [
+                'finish' => route('checkout-success') // Redirect ke halaman sukses
+            ]
         );
 
         try {
@@ -109,14 +112,13 @@ class FrontendController extends Controller
 
             // Redirect ke halaman midtrans
             return redirect($paymentUrl);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return $e;
         }
-
     }
 
-    public function success(Request $request) {
+    public function success(Request $request)
+    {
         return view('pages.frontend.success');
     }
 }
