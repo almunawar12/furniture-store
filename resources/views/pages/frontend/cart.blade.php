@@ -1,13 +1,12 @@
 @extends('layouts.frontend')
 
-@section ('content')
-
-<!-- START: BREADCRUMB -->
+@section('content')
+    <!-- START: BREADCRUMB -->
     <section class="bg-gray-100 py-8 px-4">
       <div class="container mx-auto">
         <ul class="breadcrumb">
           <li>
-            <a href="index.html">Home</a>
+            <a href="{{ route('index') }}">Home</a>
           </li>
           <li>
             <a href="#" aria-label="current-page">Shopping Cart</a>
@@ -53,18 +52,16 @@
               </div>
             </div>
 
-            
-
+            <!-- START: ROW 1 -->
             @forelse ($carts as $item)
-                <!-- START: ROW 1 -->
-                <div
+               <div
                   class="flex flex-start flex-wrap items-center mb-4 -mx-4"
                   data-row="1"
                 >
                   <div class="px-4 flex-none">
                     <div class="" style="width: 90px; height: 90px">
                       <img
-                        src="{{ $item->product->galleries()->exists() ? Storage::url($item->product->galleries->first()->url) : 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==' }}"
+                        src="{{ $item->product->galleries()->exists() ? Storage::url($item->product->galleries->first()->url) : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mN88B8AAsUB4ZtvXtIAAAAASUVORK5CYII=' }}"
                         alt="chair-1"
                         class="object-cover rounded-xl w-full h-full"
                       />
@@ -91,27 +88,26 @@
                     </div>
                   </div>
                   <div class="px-4 w-2/12">
-                    <form action="{{ route('cart-delete', $item->id) }}" method="POST">
-                      @csrf
-                      @method('DELETE')
-                        <div class="text-center">
-                        <button
-                          class="text-red-600 border-none focus:outline-none px-3 py-1"
-                          >
+                    <div class="text-center">
+                      <form action="{{ route('cart-delete', $item->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-red-600 border-none focus:outline-none px-3 py-1">
                           X
                         </button>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
-                </div>
-                <!-- END: ROW 1 -->
+                </div> 
             @empty
-                <p id="cart-empty" class="hidden text-center py-8">
-                  Ooops... Cart is empty
-                  <a href="{{ route('index') }}" class="underline">Shop Now</a>
-                </p>
+              <p id="cart-empty" class="text-center py-8">
+                Ooops... Cart is empty
+                <a href="{{ route('index') }}" class="underline">Shop Now</a>
+              </p>
             @endforelse
             
+            <!-- END: ROW 1 -->
+
           </div>
           <div class="w-full md:px-4 md:w-4/12" id="shipping-detail">
             <div class="bg-gray-100 px-4 py-6 md:p-8 md:rounded-3xl">
@@ -150,9 +146,9 @@
                 <div class="flex flex-col mb-4">
                   <label for="address" class="text-sm mb-2">Address</label>
                   <input
-                    data-
-                    name="address"
+                    data-input
                     type="text"
+                    name="address"
                     id="address"
                     class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                     placeholder="Input your address"
@@ -165,8 +161,8 @@
                   >
                   <input
                     data-input
-                    name="phone"
                     type="tel"
+                    name="phone"
                     id="phone-number"
                     class="border-gray-200 border rounded-lg px-4 py-2 bg-white text-sm focus:border-blue-200 focus:outline-none"
                     placeholder="Input your phone number"
@@ -174,7 +170,9 @@
                 </div>
 
                 <div class="flex flex-col mb-4">
-                  <label for="complete-name" class="text-sm mb-2">Choose Courier</label>
+                  <label for="complete-name" class="text-sm mb-2"
+                    >Choose Courier</label
+                  >
                   <div class="flex -mx-2 flex-wrap">
                     <div class="px-2 w-6/12 h-24 mb-4">
                       <button
@@ -284,5 +282,4 @@
       </div>
     </section>
     <!-- END: COMPLETE YOUR ROOM -->
-
 @endsection
